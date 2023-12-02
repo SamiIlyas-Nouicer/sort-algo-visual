@@ -9,6 +9,15 @@ function App() {
   ])
   const [timer, setTimer] = useState(0)
 
+  function shuffleArray(array) {
+    let arrayCopy = [...arrays]
+    for (let i = arrayCopy.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[arrayCopy[i], arrayCopy[j]] = [arrayCopy[j], arrayCopy[i]]
+    }
+    setArrays(arrayCopy)
+  }
+
   const bubbleSort = async () => {
     let arrayCopy = [...arrays]
     for (let i = 0; i < arrayCopy.length; i++) {
@@ -145,6 +154,45 @@ function App() {
     }
   }
 
+  const countingSort = () => {
+    const arrayCopy = [...arrays]
+    let Max = 0
+    for (let i = 0; i < arrayCopy.length; i++) {
+      Max = Math.max(Max, arrayCopy[i])
+    }
+
+    let countArray = new Array(Max + 1)
+    for (let i = 0; i < countArray.length; i++) {
+      countArray[i] = 0
+    }
+
+    for (let i = 0; i < arrayCopy.length; i++) {
+      countArray[arrayCopy[i]]++
+    }
+
+    for (let i = 1; i <= Max; i++) {
+      countArray[i] += countArray[i - 1]
+    }
+
+    let outputArray = new Array(arrayCopy.length)
+    let currentIndex = arrayCopy.length - 1
+
+    const intervalId = setInterval(() => {
+      if (currentIndex >= 0) {
+        outputArray[countArray[arrayCopy[currentIndex]] - 1] =
+          arrayCopy[currentIndex]
+        countArray[arrayCopy[currentIndex]]--
+
+        setArrays([...outputArray]) // Update the state with a new copy of the array
+        currentIndex--
+      } else {
+        clearInterval(intervalId) // Stop the interval when done
+      }
+    }, 500)
+  }
+
+  const quickSort = () => {}
+
   return (
     <div className="App">
       <div className="items">
@@ -169,10 +217,9 @@ function App() {
           mergeSort
         </button>
         <button onClick={() => insertionSort(arrays)}>insertionSort</button>
+        <button onClick={() => countingSort(arrays)}>countingSort</button>
       </div>
-      <div className="timer">
-        <h1>timer here .. {timer}</h1>
-      </div>
+      <button onClick={() => shuffleArray(arrays)}>Shuffle</button>
     </div>
   )
 }
